@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pokémon Battle Comparison Tool - Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff8e1;
+            color: #333;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4);
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            color: #ffcb05;
+            text-shadow: 1px 1px 2px #b38600;
+            margin-top: 1.2em;
+        }
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 0.2em;
+            text-align: center;
+        }
+        p, li {
+            font-size: 1.05em;
+        }
+        a {
+            color: #ff9900;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        code {
+            background: #fff3b0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        pre {
+            background: #fff3b0;
+            padding: 10px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.95em;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        ol {
+            margin-left: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .header p {
+            font-size: 1.2em;
+            color: #b38600;
+            text-align: center;
+            margin-top: 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.9em;
+            color: #b38600;
+        }
+        img.screenshot {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ffcb05;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .video-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>⚡ Pokémon Battle Comparison Tool</h1>
+    <p>Documentation and Usage Guide</p>
+    <p><a href="index.html">Launch the Interactive Visualization</a></p>
+</div>
+
+<div class="section">
+    <h2>Project Overview</h2>
+    <p>This interactive D3.js v3 visualization project allows users to compare any two Pokémon from all generations based on their stats and types. It provides a clear battle comparison with dynamic charts and filtering options. The design is inspired by questions about the Pokémon dataset, such as: "How do type matchups and stats influence battle outcomes?" and "Do Legendary Pokémon dominate across generations?"</p>
+</div>
+
+<div class="section">
+    <h2>Design Process</h2>
+    <p>I began by exploring the Pokémon dataset in JavaScript, loading the JSON data and prototyping a basic static display in a text editor. Initial ideas focused on a simple table view for stats, but after testing data loads and experimenting with D3 scales (inspired by the lectures, videos, pdfs, and book), I iterated to add interactive filters and a dynamic bar chart. This took about 3 weeks: Week 1 for core structure (filters and selections), Week 2 for D3 integration and battle logic and week 3 for adding sprites and additional refinements based on user testing (e.g., simplifying the type chart after trial runs). I discarded more complex ideas like force-directed graphs for type relationships to keep it focused on comparison tasks. I matched the colors for the stats based on the type. I started with a basic bar chart and evolved it for interactivity.</p>
+</div>
+
+<div class="section">
+    <h2>Rationale for Design Choices</h2>
+    <ul>
+        <li><strong>Layout (Filters → Cards → Chart → Battle Result):</strong> Arranged top-to-bottom to guide exploration (funnel design from class lectures). Filters enable data subsetting (like brushing), cards use parallel coordinates for qualitative comparison (types/sprites), and the D3 bar chart encodes quantitative stats (position for categories, length for values—per Cleveland's hierarchy of perceptions).</li>
+        <li><strong>Colors (Type-Based Gradients):</strong> Encoded Pokémon types with official colors (e.g., Electric: #F8D030) for pre-attentive attributes (Heer & Bostock principles). Gradients for dual-types reduce clutter while highlighting synergies; neutral fallback (#A8A878) ensures accessibility. Avoided reds/greens for color-blind users by sticking to Pokémon palette.</li>
+        <li><strong>Interactivity (D3 Transitions & URL Sprites):</strong> Used D3 for smooth bar fills/transitions to show stat changes on selection. Dynamic sprite loading via URLs (PokeAPI) prioritizes efficiency over offline support—loads lazily to answer "What does this Pokémon look like?" without bloating the page (inspired by D3's data-driven approach).</li>
+        <li><strong>Bar Chart Specifics:</strong> Grouped bars (side-by-side for Pokémon 1/2) allow direct comparison; rotated x-labels prevent overlap (tested with 700px width). Legend at top-right for context without distracting from data.</li>
+    </ul>
+    <p>Overall, choices balance expressiveness and effectiveness, drawing from the D3 book's emphasis on iterative, user-centered design.</p>
+</div>
+
+<div class="section">
+    <h2>Discoveries and Insights from the Visualization</h2>
+    <p>I explored the dataset by filtering and comparing to uncover patterns.</p>
+
+    <p><strong>Question 1: How do type matchups affect battle outcomes?</strong><br>
+    In one example, I selected Pikachu against Squirtle. Even without a full type-effectiveness system, Pikachu’s Electric typing and offensive stats make it a strong attacker compared to Squirtle’s bulkier defensive profile. This screenshot shows how the tool displays their stats side-by-side and highlights which one is predicted to win.</p>
+
+    <img src="Screenshot_2-12-2025_83911_.jpeg"
+         alt="Screenshot: Pikachu vs Squirtle battle comparison"
+         class="screenshot">
+
+    <p><em>Screenshot 1: Battle result where Pikachu’s Electric typing and stats help it defeat Squirtle.</em></p>
+
+    <p><strong>Question 2: Do Legendary Pokémon always win?</strong><br>
+    I compared Mewtwo (Psychic, Legendary) vs. non-Legendary Charizard. In most comparisons, Legendaries like Mewtwo tend to dominate because of their higher base stats, especially in Special Attack. However, there are cases where fast non-Legendary Pokémon can tie or come close in certain stat combinations, showing that Legendaries are strong on average but not unbeatable in all situations.</p>
+
+    <img src="Screenshot_2-12-2025_111444_.jpeg"
+         alt="Screenshot: Legendary filter with Mewtwo vs Charizard"
+         class="screenshot">
+
+    <p><em>Screenshot 2: Stats chart after using the Legendary filter; Mewtwo’s Special Attack clearly stands out compared to Charizard.</em></p>
+
+    <p><strong>Question 3: How have stats evolved across generations?</strong><br>
+    Using the Generation filter together with the Type filter set to Grass, I explored how Grass-type Pokémon changed from early games to newer ones. For example, filtering to Generation 1 and looking at Pokémon like Venusaur (#3) and Victreebel (#71), I mostly see mid-range Speed and balanced offensive stats. When I switch the Generation filter to Generation 8 and look at Grass-types such as the Grookey line (#810–#812) or Eldegoss (#830), I notice more high-Speed or high-Attack Grass Pokémon, and some with higher overall stat totals. This pattern emerged by repeatedly switching the Generation filter between 1 and 8 and observing how the stat bars and battle outcomes changed.</p>
+
+    <img src="Screenshot_2-12-2025_1423_.jpeg"
+         alt="Screenshot: Generation 1 Grass-type filter applied"
+         class="screenshot">
+
+    <p><em>Screenshot 3: Example of the interface with Grass-type and Generation 1 filter applied; I repeated this exploration with Generation 8 Grass-types to compare how their stats differ from the original Grass Pokémon.</em></p>
+
+    <img src="Screenshot_2-12-2025_181729_.jpeg"
+         alt="Screenshot: Generation 8 Grass-type filter applied"
+         class="screenshot">
+
+    <p><em>Screenshot 4: Example of the interface with Grass-type and Generation 8 filter applied, used to contrast with the Generation 1 Grass Pokémon.</em></p>
+
+    <p>These insights were iterative. I refined filters after initial tests and used the comparisons to better understand how type, stats, and generation interact in predicting battle outcomes.</p>
+</div>
+
+
+
+<div class="section">
+    <h2>Video Demonstration</h2>
+    <p>Watch this narrated demo showing the visualization in action, including filters, selections, and a key discovery using the Pokémon Battle Comparison Tool.</p>
+
+    </div>
+    <p>This unlisted YouTube video (<a href="https://youtu.be/0bQgR3Ev6CE" target="_blank" rel="noopener">direct link</a>) demonstrates the main interactions of the tool.</p>
+
+    <p>If the embedded YouTube video above does not load (e.g., Error 153), you can watch the same demo below as a local video file:</p>
+    <video width="560" height="315" controls>
+        <source src="pokemon_demo.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
+
+
+
+
+<div class="section">
+    <h2>Technologies Used</h2>
+    <ul>
+        <li><a href="https://d3js.org/" target="_blank" rel="noopener">D3.js v3</a> for data visualization</li>
+        <li>HTML5</li>
+        <li>CSS3</li>
+        <li>JavaScript ES5/ES6</li>
+        <li>JavaScript Object Dataset (<code>pokemon_data.js</code>)</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>Features</h2>
+    <ul>
+        <li>Filter Pokémon by Type, Generation, and Legendary status</li>
+        <li>Select two Pokémon to compare their stats side-by-side</li>
+        <li>Visualize stats comparison using D3.js v3 bar charts</li>
+        <li>Dynamic battle result prediction based on weighted stats</li>
+        <li>User-friendly interface with Pikachu-yellow themed styling</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>File Structure</h2>
+    <pre><code>pokemon-battle-tool/
+├── index.html                          # Main application interface and logic
+├── pokemon_data.js                     # Pokémon dataset with all generations and stats
+├── doc.html                            # This documentation file
+├── Screenshot_2-12-2025_83911_.jpeg    # Screenshot 1: Pikachu vs Squirtle
+├── Screenshot_2-12-2025_111444_.jpeg   # Screenshot 2: Mewtwo vs Charizard (Legendary)
+├── Screenshot_2-12-2025_181729_.jpeg   # Screenshot 3: Grass-type, Generation 1
+└── Screenshot_2-12-2025_1423_.jpeg     # Screenshot 4: Grass-type, Generation 8
+</code></pre>
+
+</div>
+
+<div class="section">
+    <h2>Setup Instructions</h2>
+    <ol>
+        <li>Ensure all files are in the same folder.</li>
+        <li>Open <code>index.html</code> in a modern web browser (Chrome recommended).</li>
+        <li>The app will load the Pokémon data and initialize the interface.</li>
+        <li>Use the filter controls to narrow down Pokémon choices.</li>
+        <li>Select two Pokémon from the dropdown menus to compare.</li>
+        <li>View stats, types, battle result, and the D3.js bar chart.</li>
+    </ol>
+</div>
+
+<div class="section">
+    <h2>Data Structure</h2>
+    <p>The <code>pokemon_data.js</code> file contains an array of Pokémon objects with the following structure:</p>
+    <pre><code>[
+  {
+    id: Number,
+    name: String,
+    types: [String, ...],
+    generation: Number,
+    legendary: Boolean,
+    stats: {
+      hp: Number,
+      attack: Number,
+      defense: Number,
+      special_attack: Number,
+      special_defense: Number,
+      speed: Number
+    }
+  },
+  ...
+]</code></pre>
+</div>
+
+<div class="section">
+    <h2>Troubleshooting</h2>
+    <ul>
+        <li><strong>Pokémon data not loading:</strong> Ensure <code>pokemon_data.js</code> is in the same folder and correctly linked in <code>index.html</code>.</li>
+        <li><strong>Charts not displaying:</strong> Use a modern browser with JavaScript enabled and internet connection for the D3.js CDN.</li>
+        <li><strong>Filters not working:</strong> Check the browser console for JavaScript errors.</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>Future Enhancements</h2>
+    <ul>
+        <li>Add more detailed battle mechanics and type effectiveness calculations</li>
+        <li>Include animations</li>
+        <li>Implement search functionality for Pokémon selection</li>
+        <li>Add export or share functionality for battle results</li>
+        <li>Mobile-optimized responsive layout</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>Credits & Resources</h2>
+    <ul>
+        <li><a href="https://d3js.org/" target="_blank" rel="noopener">D3.js Library</a></li>
+        <li>Pokémon data from various community datasets</li>
+        <li>Color scheme inspired by official Pokémon type colors and Pikachu</li>
+        <li>Design inspired by Pokémon official websites and fan projects</li>
+        <li><a href="https://github.com/d3/d3" target="_blank" rel="noopener">Interactive Visualization for the Web (D3) Book</a> for techniques</li>
+    </ul>
+</div>
+
+<div class="footer">
+    &copy; 2025 Pokémon Battle Comparison Tool
+</div>
+
+</body>
+</html>
